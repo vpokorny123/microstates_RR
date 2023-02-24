@@ -1,0 +1,70 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+ncomps = 
+groups = c("SCZ","BP","CON","SREL","BREL")
+ns = c(139, 107, 133, 103, 69)
+sum(ns)
+#power anal
+pwr::pwr.anova.test(k = 5, n = 69, f = NULL, sig.level = 0.02, power = .9)
+#SCZ vs. CON
+pwr::pwr.t2n.test(n1 = ns[groups=="SCZ"]-(ns[groups=="SCZ"]/10), n2= ns[groups=="CON"]-(ns[groups=="CON"]/10), d = NULL, sig.level = 0.02/2, power = .9, alternative = "greater" )
+
+pwr::pwr.t2n.test(n1 = ns[groups=="SREL"]-(ns[groups=="SREL"]/10), n2= ns[groups=="CON"]-(ns[groups=="CON"]/10), d = NULL, sig.level = 0.02/2, power = .9, alternative = "greater" )
+
+
+#SCZ vs. CON
+pwr::pwr.t.test(d = .5, sig.level = 0.01, power = .9, alternative = "greater" )
+
+
+```
+
+
+```{r}
+# Number of simulations
+n_sim <- 10000
+
+# Sample size of each group
+group_names <-c('SCZ', 'BP', 'CON', 'SREL','BREL')
+sampsi <- c(139, 107, 133, 103, 69)
+sampsi <- round(sampsi-(sampsi/10))
+
+# Mean of each group
+mus <- c(.5, .5, 0, .5 ,.5)
+# f effect size
+
+# Standard deviation of each group (assumed to be equal!)
+sds <- c(1, 1, 1,1,1)
+
+p_vals <- NULL
+
+# Set seed for reproducibility
+set.seed(142857)
+
+for(i in 1:n_sim) {
+
+  dat_tmp <- data.frame(
+    y = rnorm(sum(sampsi), mean = rep(mus, times = sampsi), sd = rep(sds, times = sampsi))
+    , group = factor(rep(seq_along(mus), times = sampsi))
+  )
+  
+  mod <- anova(lm(y~group, data = dat_tmp))
+  
+  effect_size = p_vals[i] <-  mod$`Pr(>F)`[1]
+  
+  rm(dat_tmp)
+  
+}
+
+# Simulated power
+
+cat("Simulated power is:", mean(p_vals <= 0.01)*100, "%")
+
+```
+
+
+
+

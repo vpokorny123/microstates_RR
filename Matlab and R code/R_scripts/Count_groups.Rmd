@@ -1,0 +1,42 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+library(data.table)
+csv_dir = '/Users/pokor076/My Drive/Nature Communications Microstates RR/csvs/'
+resting_subs<-fread(paste0(csv_dir,'resting_subs_raw.csv'))
+resting_subs$sub<-resting_subs$resting_list1
+resting_subs$study<-resting_subs$resting_list2
+resting_subs$study_num<-as.integer(plyr::revalue(resting_subs$study, c(GTF = "4", NPG = "2", PENS = "6")))
+group_info<-fread(paste0(csv_dir,'all_family_study_groups.csv'))
+
+final<-merge(resting_subs, group_info, by.x = c('sub','study_num'), by.y = c('subject_number','study_id') )
+
+final$group_name = final$group_id
+final$group_name[final$group_name==1] = "SCZ"
+final$group_name[final$group_name==2 | final$group_name==3] = "BP"
+final$group_name[final$group_name==5] = "CON"
+final$group_name[final$group_name==6] = "SREL"
+final$group_name[final$group_name==7 | final$group_name==8] = "BREL"
+
+# get rid of everyone else
+final = final[final$group_name=="SCZ" | final$group_name== "BP" | final$group_name== "CON" | final$group_name== "SREL" | final$group_name== "BREL"]
+
+```
+
+```{r}
+
+# boil down to uniques
+test<-dplyr::distinct(final, sub)
+#duplicated(test)
+count_up<-plyr::count(final$group_name)
+count_up
+sum(count_up$fr[count_up$x == "SCZ" | count_up$x == "BP" | count_up$x == "CON" | count_up$x == "SREL" | count_up$x == "BREL"])
+
+# collapse to smaller number of groups
+
+
+```
+

@@ -1,0 +1,27 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+ncomps = 
+groups = c("SCZ","BP","CON","SREL","BREL")
+ns = c(139, 107, 133, 103, 69)
+#power anal
+pwr::pwr.anova.test(k = 5, n = 69, f = NULL, sig.level = 0.02, power = .9)
+#SCZ vs. CON
+pwr::pwr.t2n.test(n1 = ns[groups=="SCZ"], n2= ns[groups=="CON"], d = NULL, sig.level = 0.02/4, power = .9, alternative = "greater" )
+
+pwr::pwr.t2n.test(n1 = ns[groups=="BP"], n2= ns[groups=="CON"], d = NULL, sig.level = 0.02/4, power = .9, alternative = "greater" )
+
+pwr::pwr.t2n.test(n1 = ns[groups=="SREL"], n2= ns[groups=="CON"], d = NULL, sig.level = 0.02/4, power = .9, alternative = "greater" )
+
+pwr::pwr.t2n.test(n1 = ns[groups=="BREL"], n2= ns[groups=="CON"], d = NULL, sig.level = 0.02/4, power = .9, alternative = "greater" )
+
+pwr::pwr.t.test(n = 69, d = NULL, sig.level = 0.02/4, power = .9, alternative = "greater" )
+
+View(pwr::pwr.anova.test)
+```
+
+
+

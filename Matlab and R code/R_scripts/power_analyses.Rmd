@@ -1,0 +1,38 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r}
+#power for t-tests
+library('pwr')
+groups = c("SCZ","BP","CON","SREL","BREL")
+group_1s =c("SCZ","BP","SREL","BREL")
+group_2 = "CON"
+#groups = c("SCZ","BP","CON","SREL","BREL")
+ns = c(139, 107, 132, 103, 68)
+perc_data_loss = 10
+ns_data_loss = ns-round((ns/perc_data_loss))
+
+store = NULL
+for (j in group_1s) {
+  
+res<-pwr::pwr.t2n.test(n1 = ns_data_loss[groups==j], n2= ns_data_loss[groups==group_2],
+                  d = NULL, sig.level = 0.05, power = .95, alternative = "greater" )
+
+store[j]<-res$d
+}
+round(store,2)
+
+```
+
+```{r}
+library(ICC.Sample.Size)
+#power for ICC
+calculateIccSampleSize(p = .7, p0 = .4,k = 2,alpha = .05,tails = 1,power = .95)
+
+ 
+```
+
+
+
